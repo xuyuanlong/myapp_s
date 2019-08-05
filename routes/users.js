@@ -6,8 +6,14 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+// 查询
+// find，findById，findOne
+
 router.post('/add', function(req, res, next) {
   const  {name,age} = req.body;
+  // User.insertMany([{ size: 'small' }], function(err) {
+        // 插入大量数据
+  // });
   if (!name || !age) {
     return res.send('参数错误')
   }
