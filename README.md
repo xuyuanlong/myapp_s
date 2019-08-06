@@ -1,2 +1,0 @@
-# myapp_s
-server
