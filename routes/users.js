@@ -15,6 +15,7 @@ router.post('/add', function(req, res, next) {
         // 插入大量数据
   // });
   if (!name || !age) {
+    // console.log()
     return res.send('参数错误')
   }
   let user = {
