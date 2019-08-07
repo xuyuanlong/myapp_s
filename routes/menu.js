@@ -9,24 +9,30 @@ router.post('/add', function(req, res, next) {
   query.exec(function (err, menu) {
     if (!err) {
       if (menu && menu.name) {
-        return res.send({code:'200',msg:'exit'})
+        return res.send('exit')
+      } else {
+        let newMenu = {
+          path,
+          name,
+          component,
+          children
+        }
+        Menu.create(newMenu,function(err,data) {
+          if(!err) {
+            return res.send('success');
+          }
+        })
       }
     };
   });
-
-  let newMenu = {
-    path,
-    name,
-    component,
-    children
-  }
-  console.log('----------')
-  Menu.create(newMenu,function(err,data) {
-    if(!err) {
-      return res.send('success');
-    }
-    
-  })
 });
+
+router.post('/list', function(req, res, next) {
+  Menu.find(function(err,menus){
+    if (!err) {
+      return res.send({data:menus})
+    }
+  })
+})
 
 module.exports = router;

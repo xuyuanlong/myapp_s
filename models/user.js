@@ -3,7 +3,14 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
   name: String,
-  age: Number
+  age: Number,
+  type: String,  //用户类型 1管理员 2普通用户
+  phone: String, //手机号
+  pawwword: String,
+  create: {
+    type: Date,
+    default: Date.now
+  }
 },{
   versionKey: false
 })
