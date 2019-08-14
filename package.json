@@ -6,15 +6,30 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "apidoc": "^0.17.7",
     "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie": "^0.4.0",
     "cookie-parser": "~1.4.4",
     "crypto": "^1.0.1",
+    "cryptojs": "^2.5.3",
     "debug": "~2.6.9",
+    "eventproxy": "^1.0.0",
     "express": "~4.16.1",
+    "express-session": "^1.16.2",
+    "gm": "^1.23.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "log4js": "^4.5.1",
     "mongoose": "^5.6.8",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "multiparty": "^4.2.1",
+    "node-fs": "^0.1.7",
+    "node-schedule": "^1.3.2",
+    "node-xlsx": "^0.15.0",
+    "node-zip": "^1.1.1",
+    "pinyin2": "^2.0.8",
+    "url": "^0.11.0",
+    "uuid": "^3.3.2"
   }
 }
