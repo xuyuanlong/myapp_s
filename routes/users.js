@@ -3,7 +3,7 @@ var router = express.Router();
 var cookie = require('cookie');
 const cryptojs = require('cryptojs').Crypto;
 const User = require('../models/user');
-const returnJson = require('../returnJson');
+const returnJson = require('../result-json');
 const logger = require('../models/log');
 
 
@@ -11,56 +11,88 @@ const logger = require('../models/log');
 router.post('/login', function(req, res, next) {
   const {phone,password} = req.body;
   if (!phone || !password) {
-    return res.send(returnJson(300));
+    return res.send(returnJson(106));
   }
-  console.log(phone)
-  console.log(password)
   User.findOne({'phone':phone,'password':password},function(err,user){
     if (!err) {
       if(user) {
-        console.log(user)
-        var token = cryptojs.MD5(user._id)
-        var set = {						
-          token: token,
-        };
-
-        User.update({
+        var token = cryptojs.MD5(user._id);
+        User.updateOne({
           _id: user._id
         }, {
-          $set: set
+          $set: {						
+            token: token,
+          }
         }, function(err) {
         })
-        var cookies = [cookie.serialize('user', token, {
+        var cookies = [cookie.serialize('SESSION_TOKEN_CODE', token, {
           maxAge: 36000,
           path: '/'
         })];
         res.setHeader('Set-cookie', cookies);
-        res.send(returnJson(200))
+        return res.send(returnJson(0))
+      } else {
+        return res.send(returnJson(106))
       }
     }
   })
 })
-
+// 退出登录
+router.post('/lgnout', function(req, res) {
+  var cookies = [cookie.serialize('SESSION_TOKEN_CODE', '', {
+    maxAge: 36000,
+    path: '/'
+  })];
+  res.setHeader('Set-cookie', cookies);
+  return res.send(returnJson(0));
+});
 //创建用户
 router.post('/register', function(req, res, next) {
   const {name,age,type,phone,password} = req.body;
-  if (!name || !age || !type || !phone ||!password) {
-    return res.send(returnJson(300))
+  if (!name || !age || !phone ||!password) {
+    return res.send(returnJson(3))
   } else {
     User.find({'phone':phone},function(err,data) {
       if (data && data.length) {
-        return res.send(returnJson(1001))
+        return res.send(returnJson(102))
       } else {
         let user = {name,age,type,phone,password}
         User.create(user,function(err,data) {
           if(!err) {
-            return res.send(returnJson(200));
+            return res.send(returnJson(0));
           }
         })
       }
     })
   }
 });
+//查询用户详情
+router.post('/detail', function(req, res, next) {
+  const {id} = req.body;
+  if (!id) {
+    return res.send(returnJson(3))
+  }
+  User.findOne({'_id':id},function(err,user) {
+    if (!err) {
+      if (user) {
+        return res.send(returnJson(0,user));
+      } else {
+
+      }
+    }
+    if (data && data.length) {
+      return res.send(returnJson(102))
+    } else {
+      let user = {name,age,type,phone,password}
+      User.create(user,function(err,data) {
+        if(!err) {
+          return res.send(returnJson(0));
+        }
+      })
+    }
+  }) 
+})
+
 // 用户列表
 router.post('/list', function(req, res, next) {
   const {keyword,page,pageSize} = req.body;
@@ -71,13 +103,24 @@ router.post('/list', function(req, res, next) {
       phone: {$regex : keyword}
     }]
   }
-  
   User.find(opt,{password:0}).skip((page-1)*pageSize).limit(pageSize).exec(function(err,users) {
     if (!err) {
-      logger.info('lalalalala')
-      return res.send(returnJson(200,users));
+      return res.send(returnJson(0,users));
     }
   })  
-
 })
+
+// 删除用户
+router.post('/remove', function(req, res, next) {
+  const {id} = req.body;
+  if (!id) {
+    return res.send(returnJson(3))
+  }
+  User.remove({"_id":id},function(err) {
+    if (!err) {
+      return res.send(returnJson(0))
+    }
+  }) 
+})
+
 module.exports = router;
