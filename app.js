@@ -2,13 +2,17 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// var logger = require('morgan');
 var bodyParser=require('body-parser');
+
+const logger = require('./models/logger');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var menu = require('./routes/menu');
-const filter = require('./filter')
+const filter = require('./filter');
+
 
 var app = express();
 
@@ -18,14 +22,11 @@ app.set('view engine', 'jade');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 // 路由
 app.use('/', indexRouter);
@@ -50,6 +51,6 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(8080,function() {
-  console.log("rinning")
+  logger.info('server running at 8010')
 })
 module.exports = app;

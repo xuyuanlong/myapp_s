@@ -1,9 +1,11 @@
-var mongoose = require('mongoose')
+const mongoose = require('mongoose')
+const CONST = require('../consts');
+const logger = require('./logger')
+const url = `mongodb://${CONST.DATABASE.HOST}:${CONST.DATABASE.PORT}/${CONST.DATABASE.NAME}`
 
-let url = "mongodb://localhost:27017/myapp";
 let options = {
-    user: 'myapp',
-    pass: 'myapp',
+    user: CONST.DATABASE.USER,
+    pass: CONST.DATABASE.USER,
     useNewUrlParser: true 
 }
 /**
@@ -11,9 +13,9 @@ let options = {
  */
 mongoose.connect(url,options,function(err){
     if(err) {
-        console.log('Mongoose connection error: ' + err);  
+        logger.error('Mongoose connection error: ' + err);  
     } else {
-        console.log('Mongoose connection to ' + url);  
+        logger.info('Mongoose connection to ' + url);  
     }
 });
 

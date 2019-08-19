@@ -1,13 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var cookie = require('cookie');
+const express = require('express');
+const router = express.Router();
+const cookie = require('cookie');
 const cryptojs = require('cryptojs').Crypto;
+
 const User = require('../models/user');
 const returnJson = require('../result-json');
-const logger = require('../models/log');
+const logger = require('../models/logger');
 
-
-// 登录
 router.post('/login', function(req, res, next) {
   const {phone,password} = req.body;
   if (!phone || !password) {
@@ -30,6 +29,7 @@ router.post('/login', function(req, res, next) {
           path: '/'
         })];
         res.setHeader('Set-cookie', cookies);
+        logger.info('登录成功');
         return res.send(returnJson(0))
       } else {
         return res.send(returnJson(106))
@@ -95,7 +95,7 @@ router.post('/detail', function(req, res, next) {
 
 // 用户列表
 router.post('/list', function(req, res, next) {
-  const {keyword,page,pageSize} = req.body;
+  const {keyword,start,count} = req.body;
   let opt = {}
   if (keyword) {
     opt.$or = [{
@@ -103,7 +103,7 @@ router.post('/list', function(req, res, next) {
       phone: {$regex : keyword}
     }]
   }
-  User.find(opt,{password:0}).skip((page-1)*pageSize).limit(pageSize).exec(function(err,users) {
+  User.find(opt,{password:0}).skip((start-1)*count).limit(count).exec(function(err,users) {
     if (!err) {
       return res.send(returnJson(0,users));
     }
